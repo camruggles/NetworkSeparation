@@ -113,6 +113,7 @@ function generateInputs(n,k,k0,p)
     end
     #return the mixed and original networks, the index data for permutation,
     # and the mixed degree distribution
+    dropzeros!(ERt)
     Gert, Gt, ERt, q, q2, a2
 
 end
