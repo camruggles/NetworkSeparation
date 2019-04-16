@@ -1,4 +1,5 @@
 using Plots
+include("verification.jl")
 
 function computeEdgeProductROC(mixed, er, pa)
     n = size(mixed, 1)
@@ -79,5 +80,46 @@ function computeEdgeProductROC(mixed, er, pa)
     end
     plot!(plotVector)
     readline("stdin")
+
+end
+
+function P(j, mixed, er, pa)
+    P = 1.0
+    for i = 1:n
+        if mixed[i,j] > 1
+            p = 1/sum(mixed[i,:])
+            P *= p
+        end
+    end
+    P
+
+end
+
+
+function graphEdgeProbabilities(mixed, er, pa)
+    n = size(mixed, 1)
+    Pr = zeros(n)
+    for i = 1:n
+        Pr[i] = P(i)
+    end
+    E = zeros(n,n)
+    for i = 1:n
+        for j = 1:i
+            a = Pr[i]*Pr[j]
+            E[j,i] = a
+            E[i,j] = a
+        end
+    end
+
+    markerMatrix = mixed[:,:]
+    for i = 1:n  # develop implementation that exploits the underlying sparse structure to go faster
+        for j = 1:i
+            if markerMatrix[i,j]==1 && er[i,j]==1
+                markerMatrix[i,j] = 2
+                markerMatrix[j,i] = 2
+            end
+        end
+    end
+
 
 end
