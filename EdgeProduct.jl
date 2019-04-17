@@ -1,5 +1,6 @@
 using Plots
 include("verification.jl")
+plotly()
 
 function computeEdgeProductROC(mixed, er, pa)
     n = size(mixed, 1)
@@ -99,11 +100,11 @@ end
 function graphEdgeProbabilities(mixed, er, pa)
     n = size(mixed, 1)
     Pr = zeros(n)
-    for i = 1:n
-        Pr[i] = P(i)
+    @time for i = 1:n
+        Pr[i] = P(i, mixed, er, pa)
     end
     E = zeros(n,n)
-    for i = 1:n
+    @time for i = 1:n
         for j = 1:i
             a = Pr[i]*Pr[j]
             E[j,i] = a
@@ -112,7 +113,7 @@ function graphEdgeProbabilities(mixed, er, pa)
     end
 
     markerMatrix = mixed[:,:]
-    for i = 1:n  # develop implementation that exploits the underlying sparse structure to go faster
+    @time for i = 1:n  # develop implementation that exploits the underlying sparse structure to go faster
         for j = 1:i
             if markerMatrix[i,j]==1 && er[i,j]==1
                 markerMatrix[i,j] = 2
@@ -120,6 +121,26 @@ function graphEdgeProbabilities(mixed, er, pa)
             end
         end
     end
+    println("plotting heatmaps")
+
+    data = [
+      [
+        "z" => E,
+        "type" => "heatmap"
+      ]
+    ]
+    plot(data)
+    readline(stdin)
+
+    data = [
+      [
+        "z" => markerMatrix,
+        "type" => "heatmap"
+      ]
+     ]
+    plot(data)
+    heatmap(data)
+    readline(stdin)
 
 
 end

@@ -10,7 +10,7 @@ using Plots
 
 #font = Plots.font("Helvetica", 10)
 #plotly(guidefont=font, xtickfont=font, ytickfont=font, legendfont=font)
-plotly()
+#plotly()
 
 # show plot is the difference between 4 sec and 30 sec
 showPlot = false # flag to determine if plotting will occur during this run
